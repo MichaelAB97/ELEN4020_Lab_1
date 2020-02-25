@@ -8,9 +8,7 @@ using namespace std::chrono;
 
 int main ()
 {
-    int N = 5;
-
-    cout << N << endl;
+    int N = 10;
     int matA3D[N][N][N] = {};
     int matB3D[N][N][N] = {};
     int matC3D[N][N][N] = {};
@@ -23,13 +21,14 @@ int main ()
         {
             for (int k=0; k<N; k++)
             {
-                matA3D[i][j][k] = rand() % 100;
-                matB3D[i][j][k] = rand() % 100;
+                matA3D[i][j][k] = rand() % N+1;
+                matB3D[i][j][k] = rand() % N+1;
             }
 
         }
     }
 
+    //Starting the clock
     std::chrono::time_point<std::chrono::steady_clock> startClock, endClock;
     startClock = std::chrono::steady_clock::now();
 
@@ -49,6 +48,7 @@ int main ()
         }
     }
 
+    //Stopping the clock
     endClock = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = duration_cast<duration<double>>(endClock - startClock);
 

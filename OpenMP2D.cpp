@@ -8,10 +8,6 @@ using namespace std::chrono;
 
 int main ()
 {   
-    //Starting the steady clock
-    std::chrono::time_point<std::chrono::steady_clock> startClock, endClock;
-    startClock = std::chrono::steady_clock::now();
-    
     int N = 10;
     int matA[N][N] = {};
     int matB[N][N] = {};
@@ -27,6 +23,10 @@ int main ()
         }
     }
 
+    //Starting the steady clock
+    std::chrono::time_point<std::chrono::steady_clock> startClock, endClock;
+    startClock = std::chrono::steady_clock::now();
+
     //Multiplying the 2 arrays and storing it in matrix C 
     #pragma omp parallel shared(matA,matB,matC)
     {
@@ -39,6 +39,9 @@ int main ()
                 }
             }
     }
+
+    endClock = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsedTime = duration_cast<duration<double>>(endClock - startClock);
 
     //Displaying 2D Arrays
     cout << "matA: " << endl;
@@ -72,9 +75,6 @@ int main ()
         }
         cout << endl; 
     }
-
-    endClock = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsedTime = duration_cast<duration<double>>(endClock - startClock);
 
     cout << "Elapsed Time in Seconds: " << elapsedTime.count() << endl;
 
