@@ -4,10 +4,11 @@
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h> 
+#include <chrono> 
 #define THREADS_NUM 2
 
 using namespace std;
+using namespace std::chrono;
 
 // This function Dynamically generates an NxN 2D Matrix to store the NxN elements
 int* GenerateMatrix(int N)
@@ -70,7 +71,7 @@ int* allocateMatrix(int N)
 
 //Rank 2 Matrix Multiplication
 int* rank2TensorMult(int *matrixA, int *matrixB, int N)
-{
+{   
     int dimension = N*N;
 	int* result = allocateMatrix(dimension);
 	int operation_num = dimension*N;
@@ -114,11 +115,18 @@ int main()
     cout << "\nMatrix B";
     DisplayMatrix(matrixB, N);
 
+    //Starting the steady clock
+    std::chrono::time_point<std::chrono::steady_clock> startClockPThreads, endClockPThreads;
+    startClockPThreads = std::chrono::steady_clock::now();
+
     int* matrixC = rank2TensorMult(matrixA, matrixB, N);
-    cout << "\nMatrix C";
+
+    endClockPThreads = std::chrono::steady_clock::now();
+    std::chrono::duration<double> PThreadsTime = duration_cast<duration<double>>(endClockPThreads - startClockPThreads);
+
+    cout << "\nMatrix C: " << endl;
     DisplayMatrix(matrixC,N);
-
-
+    cout << "PThreads Elapsed Time in Seconds: " << PThreadsTime.count() << endl;
 
     return 0;
 }
