@@ -13,13 +13,17 @@ int main ()
     int matB[N][N] = {};
     int matC[N][N] = {};
 
+    //Randomly generating matrix elements with the use of a seed
+    int seed = rand()%100;
+    srand(seed);
+
     //Populating A and B arrays with random values between 0 and 50 and 50 and 100 respectively
     for (int i=0; i!=N; i++)
     {
         for (int j=0; j!=N; j++)
         {
-            matA[i][j] = rand() % N+1;
-            matB[i][j] = rand() % N+1;
+            matA[i][j] = rand() % N;
+            matB[i][j] = rand() % N;
         }
     }
 

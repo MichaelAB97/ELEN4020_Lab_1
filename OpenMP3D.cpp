@@ -13,6 +13,10 @@ int main ()
     int matB3D[N][N][N] = {};
     int matC3D[N][N][N] = {};
 
+    //Randomly generating matrix elements with the use of a seed
+    int seed = rand()%100;
+    srand(seed);    
+
 
    //Populating the A and B arrays with random values between 0 and 99
     for (int i=0; i<N; i++)
@@ -21,8 +25,8 @@ int main ()
         {
             for (int k=0; k<N; k++)
             {
-                matA3D[i][j][k] = rand() % N+1;
-                matB3D[i][j][k] = rand() % N+1;
+                matA3D[i][j][k] = rand() % N;
+                matB3D[i][j][k] = rand() % N;
             }
 
         }
