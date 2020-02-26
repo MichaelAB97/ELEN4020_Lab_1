@@ -1,4 +1,4 @@
-//Rank 2 Tensor Contraction
+//Rank 3 Tensor Contraction
 //-------------------------------------------------------------------------------//
 //The elements needed for each (NxN) matrix are first stored in a 1D array.
 //-------------------------------------------------------------------------------//
@@ -29,8 +29,8 @@ pthread_mutex_t updateIndexLock;
 // Struct containing data the threads need in order to execute different operations
 typedef struct{
     int operation_index, ID;
-    int *matrixA, *matrixB, *matrixC;
-    int N;
+    int *matrixA, *matrixB, *matrixC; //matrices it will operate on
+    int N; // matrix size
 }ThreadDataIndex;
 
 
@@ -38,7 +38,8 @@ typedef struct{
    the matrix with random numbers according to a randomly generated seed value between 0 and 100 */
 int* GenerateMatrix(int N)
 {
-    int dimension = N*N;
+    int dimension = N*N*N;
+
     int seed = rand()%100;
     srand(seed);
 
@@ -71,11 +72,10 @@ int getElement(int* matrix_ptr, int coords[2], int N)
     return *(matrix_ptr + getElementPosition2D(coords,N));
 }
 
-
 //This Function displays the 2D matrix
-void Display2DMatrix(int* matrix, int N)
+void DisplayMatrix(int* matrix, int N)
 {
-    int dimension = N*N;
+    int dimension = N*N*N;
 
     for (int i = 0; i < dimension; ++i)
     {
@@ -94,7 +94,7 @@ void Display2DMatrix(int* matrix, int N)
    to the first element of the resultant matrix*/
 int* allocateMatrix(int N)
 {
-    int dimension = N*N;
+    int dimension = N*N*N;
     int* result = (int*)calloc(dimension, sizeof(int));
     return result;
 }
@@ -104,7 +104,8 @@ int* allocateMatrix(int N)
    currently accessing data to complete its operation before the next operation is executed.*/
 void *ElementMultiplier(void *arg)
 {
-    ThreadDataIndex* thread_data = (ThreadDataIndex*)arg;
+
+   ThreadDataIndex* thread_data = (ThreadDataIndex*)arg;
     int N = thread_data->N;
     int Operations = N*N*N;
     int dimension = N*N;
@@ -136,21 +137,21 @@ void *ElementMultiplier(void *arg)
         if(thread_data->operation_index == Operations) break;
     }
     pthread_exit((void*)0);
+
 } 
 
 /* Rank 2 Tensor Multiplication Function:
     this function creates threads and a struct of threads based on the number of threads defined.*/
-void rank2TensorMult(int*matrixA, int*matrixB, int*matrixC, int N)
+void rank2TensorMultPThread(int*matrixA, int*matrixB, int*matrixC, int N)
 {
     int rc;
+
     pthread_t threads[num_threads];
     ThreadDataIndex threads_data[num_threads]; 
-
-
     /* Updates the operation index for the threads so that if a thread has completed it's
-       assigned operation, it will go and execute the next available operation */   
-    nxt_operation_index = (int)num_threads; 
+       assigned operation, it will go and execute the next available operation */  
 
+    nxt_operation_index = (int)num_threads; 
 
     /* Initializing the information in the struct for each thread and each thread is assigned an operation*/
     for(int i=0; i < num_threads; ++i)
@@ -166,9 +167,9 @@ void rank2TensorMult(int*matrixA, int*matrixB, int*matrixC, int N)
         /*Creating thread, passing in the address and the function for multiplying the element*/
         //pthread_create - returns 1 if theres an error with creating the threads & 0 if not
         rc = pthread_create(&threads[i], NULL, ElementMultiplier, &threads_data[i]);
-        
+
         //Error condition: If the pthreads are created successfully, 0 is returned
-        //If threads are not created successfully, an error message will be output and the program will terminate 
+        //If threads are not created successfully, an error message will be output and the program will terminate
         if(rc)
         {
             cout<< "ERROR creating thread."<<endl;
@@ -176,37 +177,80 @@ void rank2TensorMult(int*matrixA, int*matrixB, int*matrixC, int N)
         }
     }
     //scheduling the joining of the threads.
-    for(int j = 0; j< num_threads; j++) 
+    for(int j = 0; j< num_threads; j++)
     {
         pthread_join(threads[j],NULL);
     }
 }
 
+
+//Rank 3 Multiplication
+ void rank3TensorMultPThread(int *matrixA, int *matrixB, int *matrixC, int N, int number_of_elements)
+{
+	int startPos = 0;
+
+		int elements2D = N*N;
+		for(int i=0;i<N;++i)
+		{
+            rank2TensorMultPThread(matrixA+startPos,matrixB+startPos, matrixC+startPos,N);
+			
+		 	startPos+= elements2D;
+		 	
+		}
+		
+}
+
+
+//Display 3D Matrix
+void Display3DMatrix(int *matrix, int N)
+{
+    int dimension = N*N*N;
+	if(matrix != NULL)
+	{
+		for(int i=0; i< N*N*N; ++i)
+		{
+			if( i%(N*N) == 0)
+			{
+				cout << " \n\nLayer: " << (i/(N*N)+1);
+			}
+		
+			if( i%N == 0) cout << endl;
+	
+			cout << *matrix << " ";
+			++matrix;
+		}
+		cout << endl;
+	}else cout << " The Matrix is empty";
+}
+
+
+
+
 int main()
 {
-    int N = 10; //Size of the Matrix
+    int N = 30;
+    int number_of_elements = N*N*N;
     int* matrixA = GenerateMatrix(N);
     int* matrixB = GenerateMatrix(N);
     int* matrixC = allocateMatrix(N);
 
     cout << "Matrix A";
-    Display2DMatrix(matrixA, N);
-    cout << "\nMatrix B" ;
-    Display2DMatrix(matrixB, N);
-
+    Display3DMatrix(matrixA, N);
+    cout << "\nMatrix B";
+    Display3DMatrix(matrixB, N);
 
     //Starting the steady clock
     std::chrono::time_point<std::chrono::steady_clock> startClock, endClock;
     startClock = std::chrono::steady_clock::now();
 
-    rank2TensorMult(matrixA, matrixB, matrixC, N);
+    rank3TensorMultPThread(matrixA, matrixB, matrixC, N, number_of_elements);
 
     //Pause the steady clock
     endClock = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = duration_cast<duration<double>>(endClock - startClock);
-
+    
     cout << "\nMatrix C";
-    Display2DMatrix(matrixC,N);
+    Display3DMatrix(matrixC,N);
     cout << "Elapsed Time in Seconds: " << elapsedTime.count() << endl;
 
     return 0;

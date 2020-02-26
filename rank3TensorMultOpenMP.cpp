@@ -8,7 +8,7 @@ using namespace std::chrono;
 
 int main ()
 {
-    int N = 10;
+    int N = 30;
     int matA3D[N][N][N] = {};
     int matB3D[N][N][N] = {};
     int matC3D[N][N][N] = {};
