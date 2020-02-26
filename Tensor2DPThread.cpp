@@ -1,12 +1,13 @@
-
 #include <pthread.h>
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h> 
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 #define num_threads 2
 
@@ -189,8 +190,6 @@ int* rank2TensorMult(int *matrixA, int *matrixB, int N)
     return result;
 }
 
-
-
 int main()
 {
     int N = 2;
@@ -203,18 +202,20 @@ int main()
     cout << "Matrix B" << endl;
     DisplayMatrix(matrixB, N);
 
-    
+
+    //Starting the steady clock
+    std::chrono::time_point<std::chrono::steady_clock> startClock, endClock;
+    startClock = std::chrono::steady_clock::now();
+
     run2DMultiplier(matrixA, matrixB, matrixC, N);
+
+    //Pause the steady clock
+    endClock = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsedTime = duration_cast<duration<double>>(endClock - startClock);
 
     cout << "Matrix C" << endl;
     DisplayMatrix(matrixC,N);
-
-    /*int* matrixD = rank2TensorMult(matrixA, matrixB, N);
-
-    cout << "Matrix D" << endl;
-    DisplayMatrix(matrixD,N);*/
-
-    
+    cout << "Elapsed Time in Seconds: " << elapsedTime.count() << endl;
 
     return 0;
 }
