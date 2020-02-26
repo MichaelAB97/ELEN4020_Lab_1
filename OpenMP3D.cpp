@@ -17,7 +17,6 @@ int main ()
     int seed = rand()%100;
     srand(seed);    
 
-
    //Populating the A and B arrays with random values between 0 and 99
     for (int i=0; i<N; i++)
     {   
