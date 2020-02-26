@@ -1,5 +1,5 @@
 2020-Team-014-Lab-1
-Build Process: OpenMP
+Build Process for Ubuntu 18.04: OpenMP
 
 To Compile rank2TensorMultOpenMP.cpp:
 
@@ -22,7 +22,7 @@ To run use:
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 
-Build Process: PThreads
+Build Process for Ubuntu 18.04: PThreads
 
 To Compile rank2TensorMultPThread.cpp:
 
