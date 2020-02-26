@@ -15,7 +15,9 @@ int main ()
 
     //Randomly generating matrix elements with the use of a seed
     int seed = rand()%100;
-    srand(seed);    
+    srand(seed); 
+    
+       
 
    //Populating the A and B arrays with random values between 0 and 99
     for (int i=0; i<N; i++)
@@ -104,6 +106,8 @@ int main ()
         }
         cout << endl;
     }
+
+    cout << "Elapsed Time in Seconds: " << elapsedTime.count() << endl;
 
     return 0;
 }
