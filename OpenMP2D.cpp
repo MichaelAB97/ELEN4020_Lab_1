@@ -8,7 +8,7 @@ using namespace std::chrono;
 
 int main ()
 {   
-    int N = 10;
+    int N = 3;
     int matA[N][N] = {};
     int matB[N][N] = {};
     int matC[N][N] = {};
@@ -39,7 +39,10 @@ int main ()
             {
                 for (int j=0;j<N; j++)
                 {
-                    matC[i][j] = matC[i][j] + (matA[i][j]*matB[i][j]);
+                    for (int k=0; k<N; k++)
+                    {
+                        matC[i][j] = matC[i][j] + (matA[i][k]*matB[k][j]);
+                    }
                 }
             }
     }

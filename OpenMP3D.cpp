@@ -46,7 +46,10 @@ int main ()
             {
                 for (int k=0; k<N; k++)
                 {
-                    matC3D[i][j][k] =  matC3D[i][j][k] + (matA3D[i][j][k]* matB3D[i][j][k]);
+                    for (int m=0; m<N; m++)
+                    {
+                        matC3D[i][j][k] =  matC3D[i][j][k] + (matA3D[i][j][m]* matB3D[i][m][k]);
+                    }
                 }
             }
         }

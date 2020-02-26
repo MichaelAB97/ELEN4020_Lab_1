@@ -15,7 +15,7 @@ using namespace std;
 using namespace std::chrono;
 
 // Defining the number threads to be used in the program
-#define num_threads 8
+#define num_threads 1
 
 
 // Operation Counter
@@ -184,7 +184,7 @@ void rank2TensorMult(int*matrixA, int*matrixB, int*matrixC, int N)
 
 int main()
 {
-    int N = 3; //Size of the Matrix
+    int N = 10; //Size of the Matrix
     int* matrixA = GenerateMatrix(N);
     int* matrixB = GenerateMatrix(N);
     int* matrixC = allocateMatrix(N);
