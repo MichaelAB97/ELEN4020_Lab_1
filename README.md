@@ -2,6 +2,7 @@
 Build Process: OpenMP
 
 To Compile rank2TensorMultOpenMP.cpp:
+
 g++ -fopenmp -lgomp rank2TensorMultOpenMP.cpp -o OpenMP2D
 
 To run use:
@@ -11,6 +12,7 @@ To run use:
 -----------------------------------------------------------------------------------------------
 
 To Compile rank3TensorMultOpenMP.cpp:
+
 g++ -fopenmp -lgomp rank3TensorMultOpenMP.cpp -o OpenMP3D
 
 To run use:
@@ -23,6 +25,7 @@ To run use:
 Build Process: PThreads
 
 To Compile rank2TensorMultPThread.cpp:
+
 g++ -o Tensor2DPT rank2TensorMultPThread.cpp -lpthread
 
 To run use:
